@@ -2616,7 +2616,8 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
         ])
     else:
         btn = []
-        [
+        btn.insert(0,
+            [
                 InlineKeyboardButton("sᴇᴀsᴏɴs",  url='t.me/moviecenter225')
             ]
         )
