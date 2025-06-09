@@ -218,7 +218,7 @@ async def start(client, message):
                 buttons.append([InlineKeyboardButton('ᴄʀᴇᴀᴛᴇ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
             reply_markup = InlineKeyboardMarkup(buttons)
             m=await message.reply_sticker("CAACAgUAAxkBAAEKVaxlCWGs1Ri6ti45xliLiUeweCnu4AACBAADwSQxMYnlHW4Ls8gQMAQ") 
-            await asyncio.sleep(1)
+            await asyncio.sleep(0)
             await m.delete()
             await message.reply_photo(
                 photo=random.choice(PICS),
@@ -464,7 +464,11 @@ async def start(client, message):
                     )
                     return
             if STREAM_MODE == True:
-                button = [[InlineKeyboardButton('sᴛʀᴇᴀᴍ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ', callback_data=f'generate_stream_link:{file_id}')]]
+                button = [[InlineKeyboardButton("✨ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ", url='https://t.me/moviecenter225'),
+                        InlineKeyboardButton('🍿ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ', url='https://t.me/+agpA4_bznFAwZGVl')
+                    ],[
+                        InlineKeyboardButton("⭐ꜱᴇʀɪᴇꜱ ɢʀᴏᴜᴘ", url='https://t.me/mcserieshub')
+                    ]]
                 reply_markup=InlineKeyboardMarkup(button)
             else:
                 reply_markup = None
@@ -527,7 +531,11 @@ async def start(client, message):
                     )
                     return
             if STREAM_MODE == True:
-                button = [[InlineKeyboardButton('sᴛʀᴇᴀᴍ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ', callback_data=f'generate_stream_link:{file_id}')]]
+                button = [[InlineKeyboardButton("✨ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ", url='https://t.me/moviecenter225'),
+                        InlineKeyboardButton('🍿ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ', url='https://t.me/+agpA4_bznFAwZGVl')
+                    ],[
+                        InlineKeyboardButton("⭐ꜱᴇʀɪᴇꜱ ɢʀᴏᴜᴘ", url='https://t.me/mcserieshub')
+                    ]]
                 reply_markup=InlineKeyboardMarkup(button)
             else:
                 reply_markup = None
@@ -585,7 +593,11 @@ async def start(client, message):
             )
             return
     if STREAM_MODE == True:
-        button = [[InlineKeyboardButton('sᴛʀᴇᴀᴍ ᴀɴᴅ ᴅᴏᴡɴʟᴏᴀᴅ', callback_data=f'generate_stream_link:{file_id}')]]
+        button = [[    InlineKeyboardButton("✨ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ", url='https://t.me/moviecenter225'),
+                        InlineKeyboardButton('🍿ᴊᴏɪɴ ᴏᴜʀ ᴄʜᴀɴɴᴇʟ', url='https://t.me/+agpA4_bznFAwZGVl')
+                    ],[
+                        InlineKeyboardButton("⭐ꜱᴇʀɪᴇꜱ ɢʀᴏᴜᴘ", url='https://t.me/mcserieshub')
+                    ]]
         reply_markup=InlineKeyboardMarkup(button)
     else:
         reply_markup = None
