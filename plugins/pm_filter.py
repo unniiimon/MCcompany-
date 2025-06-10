@@ -1719,7 +1719,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                  InlineKeyboardButton('Jᴏɪɴ Cʜᴀɴɴᴇʟ', url=link.invite_link),
                  InlineKeyboardButton("Vɪᴇᴡ Sᴛᴀᴛᴜs", url=f"{query.message.link}")
                ],[
-                 InlineKeyboardButton("Rᴇᴏ̨ᴜᴇsᴛ Gʀᴏᴜᴘ Lɪɴᴋ", url="https://t.me/+KzbVzahVdqQ3MmM1")
+                 InlineKeyboardButton("Rᴇᴏ̨ᴜᴇsᴛ Gʀᴏᴜᴘ Lɪɴᴋ", url="https://t.me/mcserieshub")
                ]]
         if query.from_user.id in ADMINS:
             user = await client.get_users(from_user)
@@ -1744,7 +1744,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton('Jᴏɪɴ Cʜᴀɴɴᴇʟ', url=link.invite_link),
             InlineKeyboardButton("Vɪᴇᴡ Sᴛᴀᴛᴜs", url=f"{query.message.link}")
         ],[
-            InlineKeyboardButton("Rᴇᴏ̨ᴜᴇsᴛ Gʀᴏᴜᴘ Lɪɴᴋ", url="https://t.me/vj_bots")
+            InlineKeyboardButton("Rᴇᴏ̨ᴜᴇsᴛ Gʀᴏᴜᴘ Lɪɴᴋ", url="https://t.me/moviecenter225")
         ]]
         if query.from_user.id in ADMINS:
             user = await client.get_users(from_user)
@@ -1817,13 +1817,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             buttons = [[
                 InlineKeyboardButton('⤬ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
             ],[
-                InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ', callback_data="shortlink_info"),
+                InlineKeyboardButton('ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ', url="https://t.me/moviecenter225"),
                 InlineKeyboardButton('ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ', url=GRP_LNK)
             ],[
                 InlineKeyboardButton('ʜᴇʟᴘ', callback_data='help'),
                 InlineKeyboardButton('ᴀʙᴏᴜᴛ', callback_data='about')
             ],[
-                InlineKeyboardButton('ᴘʀᴇᴍɪᴜᴍ ᴀɴᴅ ʀᴇғᴇʀʀᴀʟ', callback_data='subscription')
+                InlineKeyboardButton('ꜱᴇʀɪᴇꜱ ɢʀᴏᴜᴘ', url='https://t.me/mcserieshub')
             ],[
                 InlineKeyboardButton('ᴊᴏɪɴ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url=CHNL_LNK)
             ]]
@@ -1831,8 +1831,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             buttons = [[
                 InlineKeyboardButton('⤬ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ⤬', url=f'http://t.me/{temp.U_NAME}?startgroup=true')
             ],[
-                InlineKeyboardButton('ᴇᴀʀɴ ᴍᴏɴᴇʏ', callback_data="shortlink_info"),
-                InlineKeyboardButton('ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ', url=GRP_LNK)
+                InlineKeyboardButton('ᴊᴏɪɴ ᴏᴜʀ ɢʀᴏᴜᴘ', url="https://t.me/moviecenter225"),
+                InlineKeyboardButton('ꜱᴇʀɪᴇꜱ ɢʀᴏᴜᴘ', url='https://t.me/mcserieshub')
             ],[
                 InlineKeyboardButton('ʜᴇʟᴘ', callback_data='help'),
                 InlineKeyboardButton('ᴀʙᴏᴜᴛ', callback_data='about')
@@ -1945,7 +1945,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "about":
         buttons = [[
             InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
-            InlineKeyboardButton('Sᴏᴜʀᴄᴇ Cᴏᴅᴇ', url="https://github.com/VJBots/VJ-FILTER-BOT")
+            InlineKeyboardButton('ꜱᴇʀɪᴇꜱ ɢʀᴏᴜᴘ', url="https://t.me/mcserieshub")
         ],[
             InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
             InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close_data')
@@ -2731,12 +2731,12 @@ async def auto_filter(client, name, msg, reply_msg, ai_search, spoll=False):
         
         try:
             if settings['auto_delete']:
-                await asyncio.sleep(10)
+                await asyncio.sleep(86400)
                 await fuk.delete()
                 await message.delete()
         except KeyError:
             await save_group_settings(message.chat.id, 'auto_delete', True)
-            await asyncio.sleep(10)
+            await asyncio.sleep(86400)
             await fuk.delete()
             await message.delete()
 
