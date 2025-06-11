@@ -246,7 +246,10 @@ Nᴀᴍᴇ - {}"""
 
     CAPTION = """<b>📂 ғɪʟᴇɴᴀᴍᴇ : {file_name}
 
-<b>⚙️ sɪᴢᴇ : {file_size}</b>""" 
+<b>⚙️ sɪᴢᴇ : {file_size}</b>"""
+
+ ✳️ ᴊᴏɪɴ :- @moviecenter225
+ ✳️ ᴊᴏɪɴ :- @mcserieshub
 
     IMDB_TEMPLATE_TXT = """
 <b>Query: {qurey}
