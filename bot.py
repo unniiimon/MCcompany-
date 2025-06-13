@@ -27,6 +27,8 @@ from plugins.clone import restart_bots
 from TechVJ.bot import TechVJBot
 from TechVJ.util.keepalive import ping_server
 from TechVJ.bot.clients import initialize_clients
+from keep_alive import keep_alive
+keep_alive()
 
 ppath = "plugins/*.py"
 files = glob.glob(ppath)
