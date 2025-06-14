@@ -15,6 +15,8 @@ from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save
 from database.connections_mdb import active_connection
 from urllib.parse import quote_plus
 from TechVJ.util.file_properties import get_name, get_hash, get_media_file_size
+from keep_alive import keep_alive
+keep_alive()
 logger = logging.getLogger(__name__)
 
 BATCH_FILES = {}
