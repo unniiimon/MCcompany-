@@ -109,8 +109,9 @@ async def main() -> None:
     await idle()  # blocks here until Ctrl‑C / SIGTERM
 
 # ── Entrypoint ─────────────────────────────────────────────────
+# ── Entrypoint ─────────────────────────────────────────────────
 if __name__ == "__main__":
     try:
-        asyncio.run(start())
+        asyncio.run(main())  # ✅ Use 'main' here
     except KeyboardInterrupt:
         logging.info("❌ Bot Stopped.")
