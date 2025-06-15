@@ -12,8 +12,6 @@ from TechVJ import StartTime, __version__
 from TechVJ.util.custom_dl import ByteStreamer
 from TechVJ.util.time_format import get_readable_time
 from TechVJ.util.render_template import render_page
-from keep_alive import keep_alive
-keep_alive()
 
 routes = web.RouteTableDef()
 
