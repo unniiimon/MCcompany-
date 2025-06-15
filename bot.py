@@ -1,89 +1,109 @@
-# bot.py  (trimmed to essentials)
+# Don't Remove Credit @VJ_Botz
+# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
+# Ask Doubt on telegram @KingVJ01
 
-import asyncio, logging, importlib.util
+import sys, glob, importlib, logging.config, pytz, asyncio
 from pathlib import Path
-from aiohttp import web
-import pytz
-from datetime import datetime, date
 from pyrogram import Client, idle
+from aiohttp import web
+from datetime import date, datetime
 
 from database.users_chats_db import db
 from info import *
+from utils import temp
 from Script import script
-from TechVJ.bot import TechVJBot
-from TechVJ.bot.clients import initialize_clients
+from plugins import web_server
 from plugins.clone import restart_bots
+from TechVJ.bot import TechVJBot
+from TechVJ.util.keepalive import ping_server
+from TechVJ.bot.clients import initialize_clients
 
-# --------------------------------------------------------------------------- #
-# 1.  Health‑check HTTP server (aiohttp only)
-# --------------------------------------------------------------------------- #
+# Optional: Comment out if it causes conflict
+# from keep_alive import keep_alive
+# keep_alive()
 
-async def health(request):
-    return web.Response(text="OK", status=200)
+# Logging setup
+logging.config.fileConfig('logging.conf')
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger("pyrogram").setLevel(logging.ERROR)
 
-async def build_web_app() -> web.Application:
-    app = web.Application()
-    app.router.add_get("/", health)      # UptimeRobot will hit this
-    return app
-
-# --------------------------------------------------------------------------- #
-# 2.  Main startup coroutine
-# --------------------------------------------------------------------------- #
+# Async event loop
+loop = asyncio.get_event_loop()
+ppath = "plugins/*.py"
+files = glob.glob(ppath)
 
 async def start():
-    print("\nInitialising bot…")
+    print("\n🔄 Initializing Your Bot...\n")
+
+    # Initialize clients
     await initialize_clients()
 
-    # dynamic plugin loader
-    for file in Path("plugins").glob("*.py"):
-        name = file.stem
-        spec  = importlib.util.spec_from_file_location(f"plugins.{name}", file)
-        mod   = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        print(f"Tech VJ Imported => {name}")
+    # Load all plugins
+    for name in files:
+        plugin_name = Path(name).stem
+        spec = importlib.util.spec_from_file_location(f"plugins.{plugin_name}", name)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules[f"plugins.{plugin_name}"] = module
+        print(f"✅ Plugin Loaded: {plugin_name}")
 
-    # start Pyrogram
+    # Start bot
     await TechVJBot.start()
+    bot_info = await TechVJBot.get_me()
 
-    # keep banned lists up to date
-    banned_users, banned_chats = await db.get_banned()
-    temp.BANNED_USERS, temp.BANNED_CHATS = banned_users, banned_chats
-    me = await TechVJBot.get_me()
-    temp.BOT, temp.ME, temp.U_NAME, temp.B_NAME = TechVJBot, me.id, me.username, me.first_name
-    logging.info(script.LOGO)
+    # Store bot info
+    temp.BOT = TechVJBot
+    temp.ME = bot_info.id
+    temp.U_NAME = bot_info.username
+    temp.B_NAME = bot_info.first_name
 
-    # notify restart
-    tz = pytz.timezone("Asia/Kolkata")
-    now = datetime.now(tz).strftime("%H:%M:%S %p")
+    # Ping server if hosted on Heroku
+    if ON_HEROKU:
+        asyncio.create_task(ping_server())
+
+    # Load banned users/chats
+    temp.BANNED_USERS, temp.BANNED_CHATS = await db.get_banned()
+
+    # Notify log channels
+    tz = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(tz)
     today = date.today()
+    time = now.strftime("%H:%M:%S %p")
 
     try:
-        await TechVJBot.send_message(LOG_CHANNEL, script.RESTART_TXT.format(today, now))
-    except Exception as e:
-        logging.warning("Cannot send restart log: %s", e)
+        await TechVJBot.send_message(LOG_CHANNEL, script.RESTART_TXT.format(today, time))
+    except Exception:
+        print("⚠️ Make Bot Admin in LOG_CHANNEL")
+
+    for ch in CHANNELS:
+        try:
+            msg = await TechVJBot.send_message(ch, "**Bot Restarted**")
+            await msg.delete()
+        except:
+            print(f"⚠️ Make Bot Admin in {ch}")
+
+    try:
+        msg = await TechVJBot.send_message(AUTH_CHANNEL, "**Bot Restarted**")
+        await msg.delete()
+    except:
+        print("⚠️ Make Bot Admin in AUTH_CHANNEL")
 
     if CLONE_MODE:
-        print("Restarting clone bots…")
+        print("♻️ Restarting All Clone Bots...")
         await restart_bots()
+        print("✅ Clone Bots Restarted")
 
-    # spin up aiohttp for health probe
-    app = await build_web_app()
-    runner = web.AppRunner(app)
-    await runner.setup()
-    bind_port = int(os.getenv("PORT", 8080))
-    await web.TCPSite(runner, "0.0.0.0", bind_port).start()
+    # Start Web Server
+    app = web.AppRunner(await web_server())
+    await app.setup()
+    await web.TCPSite(app, "0.0.0.0", PORT).start()
 
-    # block forever
+    print("🚀 Bot is fully up and running!")
     await idle()
 
-# --------------------------------------------------------------------------- #
-# 3.  Entrypoint – single, modern event‑loop
-# --------------------------------------------------------------------------- #
-
+# Entry point
 if __name__ == "__main__":
-    import uvloop
-    uvloop.install()            # 15‑20 % faster I/O, optional
     try:
-        asyncio.run(start())    # no deprecated get_event_loop()
-    except (KeyboardInterrupt, SystemExit):
-        logging.info("Bot stopped, bye 👋")
+        loop.run_until_complete(start())
+    except KeyboardInterrupt:
+        logging.info("❌ Bot Stopped.")
