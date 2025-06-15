@@ -1,53 +1,86 @@
-# Don't Remove Credit @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
-from pyrogram import Client
-from pyrogram import filters
-from info import API_ID, API_HASH, BOT_TOKEN, PLUGIN_PATH, LOGGER
-from database.users_chats_db import db
-import logging
+import os
+import sys
+import glob
 import asyncio
+import logging
+import importlib.util
+from pathlib import Path
+from aiohttp import web
+from pyrogram import Client, idle
+from database.users_chats_db import db
+from utils import temp
+from Script import script
 
-# Configure Logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
-LOGGER = logging.getLogger(__name__)
+# ✅ Use environment variables securely (no info.py needed)
+API_ID = int(os.environ.get("API_ID"))
+API_HASH = os.environ.get("API_HASH")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+SUPPORT_CHAT = os.environ.get("SUPPORT_CHAT", "YourSupportGroup")
+LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", 0))
+OWNER_ID = int(os.environ.get("OWNER_ID", 0))
+PORT = int(os.environ.get("PORT", 8080))  # Render uses dynamic port
+APP_NAME = os.environ.get("RENDER_EXTERNAL_URL", "http://localhost")
 
-# Bot Client
-Bot = Client(
-    "MyBot",
+# Logger setup
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# ✅ Bot client
+app = Client(
+    "MovieProviderBot",
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    plugins=dict(root=PLUGIN_PATH)
+    plugins={"root": "plugins"},
+    workers=100,
+    sleep_threshold=10
 )
 
-# Background startup tasks
-async def startup_tasks():
-    LOGGER.info("Getting banned users and chats...")
-    banned_users, banned_chats = await db.get_banned()
-    from utils.temp import BANNED_USERS, BANNED_CHATS
-    BANNED_USERS.extend(banned_users)
-    BANNED_CHATS.extend(banned_chats)
-    LOGGER.info(f"Banned Users Loaded: {len(BANNED_USERS)}")
-    LOGGER.info(f"Banned Groups Loaded: {len(BANNED_CHATS)}")
+# ✅ Load banned users/chats from DB
+async def load_bans():
+    logger.info("Loading banned users & chats from DB...")
+    b_users, b_chats = await db.get_banned()
+    temp.BANNED_USERS = list(set(b_users))
+    temp.BANNED_CHATS = list(set(b_chats))
+    logger.info(f"Banned users: {len(temp.BANNED_USERS)}, Banned chats: {len(temp.BANNED_CHATS)}")
 
-# Run the bot
+# ✅ Auto-load plugins from 'plugins' folder
+def load_plugins():
+    plugin_path = Path(__file__).parent / "plugins"
+    for file in glob.glob(f"{plugin_path}/**/*.py", recursive=True):
+        module_name = Path(file).stem
+        rel_path = Path(file).relative_to(plugin_path.parent)
+        spec = importlib.util.spec_from_file_location(str(rel_path), file)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+    logger.info("All plugins loaded.")
+
+# ✅ Optional keep-alive server for Render (Flask-style aiohttp server)
+async def keep_alive():
+    async def handler(request):
+        return web.Response(text="Bot is Alive!", content_type="text/plain")
+
+    app = web.Application()
+    app.router.add_get("/", handler)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", PORT)
+    await site.start()
+    logger.info(f"Keep-alive server running on port {PORT}")
+
+# ✅ Main function
 async def main():
-    await startup_tasks()
-    await Bot.start()
-    LOGGER.info("Bot started successfully.")
+    await load_bans()
+    await app.start()
+    logger.info(f"{script.BOT_NAME} Started Successfully!")
+    await keep_alive()
     await idle()
-    await Bot.stop()
-    LOGGER.info("Bot stopped.")
+    await app.stop()
+    logger.info("Bot stopped.")
 
-# Entry point
 if __name__ == "__main__":
-    from pyrogram.idle import idle
     try:
         asyncio.run(main())
-    except KeyboardInterrupt:
-        LOGGER.info("Bot manually stopped.")
+    except (KeyboardInterrupt, SystemExit):
+        logger.warning("Bot shutdown requested... Exiting.")
