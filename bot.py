@@ -111,6 +111,6 @@ async def main() -> None:
 # ── Entrypoint ─────────────────────────────────────────────────
 if __name__ == "__main__":
     try:
-        loop.run_until_complete(main())
+        asyncio.run(start())
     except KeyboardInterrupt:
-        logging.info("🛑 Bot stopped — bye!")
+        logging.info("❌ Bot Stopped.")
