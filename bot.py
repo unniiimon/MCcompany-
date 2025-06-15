@@ -2,6 +2,7 @@
 #  Tech VJ – Telegram Bot main entry‑point
 #  Keep credits ♥  @VJ_Botz   @Tech_VJ   @KingVJ01
 #  ──────────────────────────────────────────────────────────────
+
 import os, sys, glob, importlib.util, logging.config, asyncio, pytz
 from pathlib import Path
 from datetime import datetime, date
@@ -31,10 +32,6 @@ except ModuleNotFoundError:
 logging.config.fileConfig("logging.conf")
 logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
-
-# ── Fresh, explicit event‑loop (avoids deprecation warning) ────
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
 
 # ── Discover all plugin *.py files once at startup ─────────────
 PLUGIN_PATHS = glob.glob("plugins/*.py")
@@ -98,7 +95,8 @@ async def main() -> None:
     async def alive(_):
         return web.Response(text="I’m alive!", status=200)
 
-    webapp = web.Application(); webapp.add_routes([web.get("/", alive)])
+    webapp = web.Application()
+    webapp.add_routes([web.get("/", alive)])
     runner = web.AppRunner(webapp)
     await runner.setup()
 
@@ -109,9 +107,8 @@ async def main() -> None:
     await idle()  # blocks here until Ctrl‑C / SIGTERM
 
 # ── Entrypoint ─────────────────────────────────────────────────
-# ── Entrypoint ─────────────────────────────────────────────────
 if __name__ == "__main__":
     try:
-        asyncio.run(main())  # ✅ Use 'main' here
+        asyncio.run(main())  # ✅ Fixed: use 'main' directly
     except KeyboardInterrupt:
         logging.info("❌ Bot Stopped.")
